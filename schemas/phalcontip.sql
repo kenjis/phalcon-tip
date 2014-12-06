@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.2.7
+-- version 4.0.10.6
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 23, 2014 at 04:28 PM
--- Server version: 5.7.4-m14
--- PHP Version: 5.5.18
+-- Generation Time: Dec 06, 2014 at 08:17 PM
+-- Server version: 5.1.73-log
+-- PHP Version: 5.5.19
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `phalcontip`
+-- Database: `phalcon_tips`
 --
 
 -- --------------------------------------------------------
@@ -27,11 +27,15 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE IF NOT EXISTS `activities` (
-`id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `users_id` int(10) unsigned NOT NULL,
   `type` char(1) NOT NULL,
   `posts_id` int(10) unsigned DEFAULT NULL,
-  `created_at` int(18) unsigned DEFAULT NULL
+  `created_at` int(18) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `created_at` (`created_at`),
+  KEY `users_id` (`users_id`),
+  KEY `posts_id` (`posts_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=20 ;
 
 --
@@ -66,7 +70,7 @@ INSERT INTO `activities` (`id`, `users_id`, `type`, `posts_id`, `created_at`) VA
 --
 
 CREATE TABLE IF NOT EXISTS `activity_notifications` (
-`id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `users_id` int(10) unsigned NOT NULL,
   `posts_id` int(10) unsigned NOT NULL,
   `posts_replies_id` int(10) unsigned DEFAULT NULL,
@@ -74,7 +78,9 @@ CREATE TABLE IF NOT EXISTS `activity_notifications` (
   `users_origin_id` int(10) unsigned DEFAULT NULL,
   `created_at` int(18) unsigned DEFAULT NULL,
   `was_read` char(1) COLLATE utf8_unicode_ci NOT NULL,
-  `extra` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL
+  `extra` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `users_id` (`users_id`,`was_read`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=5 ;
 
 --
@@ -94,12 +100,14 @@ INSERT INTO `activity_notifications` (`id`, `users_id`, `posts_id`, `posts_repli
 --
 
 CREATE TABLE IF NOT EXISTS `categories` (
-`id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(72) NOT NULL,
   `slug` varchar(32) DEFAULT NULL,
   `number_posts` int(10) unsigned DEFAULT NULL,
   `no_bounty` varchar(1) NOT NULL DEFAULT 'N',
-  `no_digest` varchar(1) NOT NULL DEFAULT 'N'
+  `no_digest` varchar(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`id`),
+  KEY `number_posts` (`number_posts`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=26 ;
 
 --
@@ -140,10 +148,12 @@ INSERT INTO `categories` (`id`, `name`, `slug`, `number_posts`, `no_bounty`, `no
 --
 
 CREATE TABLE IF NOT EXISTS `irclog` (
-`id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `who` varchar(64) NOT NULL,
   `content` text,
-  `datelog` int(10) unsigned NOT NULL
+  `datelog` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `datelog` (`datelog`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -153,7 +163,7 @@ CREATE TABLE IF NOT EXISTS `irclog` (
 --
 
 CREATE TABLE IF NOT EXISTS `notifications` (
-`id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `users_id` int(10) unsigned NOT NULL,
   `posts_id` int(10) unsigned NOT NULL,
   `posts_replies_id` int(10) unsigned DEFAULT NULL,
@@ -161,7 +171,11 @@ CREATE TABLE IF NOT EXISTS `notifications` (
   `created_at` int(18) unsigned DEFAULT NULL,
   `modified_at` int(18) unsigned DEFAULT NULL,
   `message_id` char(60) DEFAULT NULL,
-  `sent` char(1) NOT NULL DEFAULT 'N'
+  `sent` char(1) NOT NULL DEFAULT 'N',
+  PRIMARY KEY (`id`),
+  KEY `users_id` (`users_id`),
+  KEY `posts_id` (`posts_id`),
+  KEY `sent` (`sent`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
@@ -179,12 +193,14 @@ INSERT INTO `notifications` (`id`, `users_id`, `posts_id`, `posts_replies_id`, `
 --
 
 CREATE TABLE IF NOT EXISTS `notifications_bounces` (
-`id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `email` varchar(120) NOT NULL,
   `status` varchar(10) DEFAULT NULL,
   `diagnostic` varchar(120) DEFAULT NULL,
   `created_at` int(10) unsigned NOT NULL,
-  `reported` char(1) NOT NULL
+  `reported` char(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `email` (`email`,`reported`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -194,7 +210,7 @@ CREATE TABLE IF NOT EXISTS `notifications_bounces` (
 --
 
 CREATE TABLE IF NOT EXISTS `posts` (
-`id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `users_id` int(10) unsigned NOT NULL,
   `categories_id` int(10) unsigned NOT NULL,
   `title` varchar(128) NOT NULL,
@@ -211,7 +227,16 @@ CREATE TABLE IF NOT EXISTS `posts` (
   `status` char(1) DEFAULT 'A',
   `locked` char(1) DEFAULT 'N',
   `deleted` int(3) DEFAULT '0',
-  `accepted_answer` char(1) DEFAULT 'N'
+  `accepted_answer` char(1) DEFAULT 'N',
+  PRIMARY KEY (`id`),
+  KEY `users_id` (`users_id`),
+  KEY `categories_id` (`categories_id`),
+  KEY `title` (`title`),
+  KEY `number_replies` (`number_replies`),
+  KEY `modified_at` (`modified_at`),
+  KEY `created_at` (`created_at`),
+  KEY `sticked` (`sticked`,`created_at`),
+  KEY `deleted` (`deleted`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=14 ;
 
 --
@@ -239,12 +264,15 @@ INSERT INTO `posts` (`id`, `users_id`, `categories_id`, `title`, `slug`, `conten
 --
 
 CREATE TABLE IF NOT EXISTS `posts_bounties` (
-`id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `posts_id` int(10) unsigned NOT NULL,
   `users_id` int(10) unsigned NOT NULL,
   `posts_replies_id` int(10) unsigned NOT NULL,
   `points` int(10) unsigned NOT NULL,
-  `created_at` int(18) NOT NULL
+  `created_at` int(18) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `users_id` (`users_id`,`posts_replies_id`),
+  KEY `posts_id` (`posts_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
@@ -261,11 +289,13 @@ INSERT INTO `posts_bounties` (`id`, `posts_id`, `users_id`, `posts_replies_id`, 
 --
 
 CREATE TABLE IF NOT EXISTS `posts_history` (
-`id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `posts_id` int(10) unsigned NOT NULL,
   `users_id` int(10) unsigned NOT NULL,
   `created_at` int(18) unsigned NOT NULL,
-  `content` text COLLATE utf8_unicode_ci
+  `content` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `posts_id` (`posts_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=51 ;
 
 --
@@ -332,9 +362,11 @@ INSERT INTO `posts_history` (`id`, `posts_id`, `users_id`, `created_at`, `conten
 --
 
 CREATE TABLE IF NOT EXISTS `posts_notifications` (
-`id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `users_id` int(10) unsigned NOT NULL,
-  `posts_id` int(10) unsigned NOT NULL
+  `posts_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `users_id` (`users_id`,`posts_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=15 ;
 
 --
@@ -364,7 +396,7 @@ INSERT INTO `posts_notifications` (`id`, `users_id`, `posts_id`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `posts_replies` (
-`id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `posts_id` int(10) unsigned NOT NULL,
   `users_id` int(10) unsigned NOT NULL,
   `in_reply_to_id` int(10) unsigned DEFAULT '0',
@@ -374,7 +406,10 @@ CREATE TABLE IF NOT EXISTS `posts_replies` (
   `edited_at` int(18) unsigned DEFAULT NULL,
   `votes_up` int(10) unsigned DEFAULT NULL,
   `votes_down` int(10) unsigned DEFAULT NULL,
-  `accepted` char(1) DEFAULT 'N'
+  `accepted` char(1) DEFAULT 'N',
+  PRIMARY KEY (`id`),
+  KEY `posts_id` (`posts_id`),
+  KEY `users_id` (`users_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
@@ -392,11 +427,13 @@ INSERT INTO `posts_replies` (`id`, `posts_id`, `users_id`, `in_reply_to_id`, `co
 --
 
 CREATE TABLE IF NOT EXISTS `posts_replies_history` (
-`id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `posts_replies_id` int(10) unsigned NOT NULL,
   `users_id` int(10) unsigned NOT NULL,
   `created_at` int(18) unsigned NOT NULL,
-  `content` text COLLATE utf8_unicode_ci
+  `content` text COLLATE utf8_unicode_ci,
+  PRIMARY KEY (`id`),
+  KEY `posts_replies_id` (`posts_replies_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
 
 --
@@ -414,11 +451,12 @@ INSERT INTO `posts_replies_history` (`id`, `posts_replies_id`, `users_id`, `crea
 --
 
 CREATE TABLE IF NOT EXISTS `posts_replies_votes` (
-`id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `posts_replies_id` int(10) unsigned NOT NULL,
   `users_id` int(10) unsigned NOT NULL,
   `vote` int(3) NOT NULL,
-  `created_at` int(18) unsigned NOT NULL
+  `created_at` int(18) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -428,10 +466,12 @@ CREATE TABLE IF NOT EXISTS `posts_replies_votes` (
 --
 
 CREATE TABLE IF NOT EXISTS `posts_subscribers` (
-`id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `posts_id` int(10) unsigned NOT NULL,
   `users_id` int(10) unsigned NOT NULL,
-  `created_at` int(10) unsigned NOT NULL
+  `created_at` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `posts_id` (`posts_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -441,9 +481,11 @@ CREATE TABLE IF NOT EXISTS `posts_subscribers` (
 --
 
 CREATE TABLE IF NOT EXISTS `posts_views` (
-`id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `posts_id` int(10) unsigned NOT NULL,
-  `ipaddress` varchar(20) NOT NULL
+  `ipaddress` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `posts_id` (`posts_id`,`ipaddress`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=245 ;
 
 --
@@ -703,11 +745,12 @@ INSERT INTO `posts_views` (`id`, `posts_id`, `ipaddress`) VALUES
 --
 
 CREATE TABLE IF NOT EXISTS `posts_votes` (
-`id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `posts_id` int(10) unsigned NOT NULL,
   `users_id` int(10) unsigned NOT NULL,
   `vote` int(3) NOT NULL,
-  `created_at` int(18) unsigned NOT NULL
+  `created_at` int(18) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
 
 --
@@ -725,7 +768,7 @@ INSERT INTO `posts_votes` (`id`, `posts_id`, `users_id`, `vote`, `created_at`) V
 --
 
 CREATE TABLE IF NOT EXISTS `users` (
-  `id` int(10) unsigned NOT NULL,
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(72) DEFAULT NULL,
   `login` varchar(32) DEFAULT NULL,
   `email` varchar(70) DEFAULT NULL,
@@ -742,8 +785,15 @@ CREATE TABLE IF NOT EXISTS `users` (
   `votes` int(10) unsigned DEFAULT NULL,
   `votes_points` int(11) DEFAULT NULL,
   `banned` char(1) DEFAULT 'N',
-  `theme` char(1) DEFAULT 'D'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `theme` char(1) DEFAULT 'D',
+  PRIMARY KEY (`id`),
+  KEY `access_token` (`access_token`),
+  KEY `login` (`login`),
+  KEY `email` (`email`),
+  KEY `karma` (`karma`),
+  KEY `login_2` (`login`),
+  KEY `notifications` (`notifications`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `users`
@@ -765,205 +815,11 @@ CREATE TABLE IF NOT EXISTS `users_badges` (
   `type` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `code1` int(10) unsigned DEFAULT NULL,
   `code2` int(10) unsigned DEFAULT NULL,
-  `created_at` int(10) unsigned NOT NULL
+  `created_at` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `users_id` (`users_id`,`badge`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `activities`
---
-ALTER TABLE `activities`
- ADD PRIMARY KEY (`id`), ADD KEY `created_at` (`created_at`), ADD KEY `users_id` (`users_id`), ADD KEY `posts_id` (`posts_id`);
-
---
--- Indexes for table `activity_notifications`
---
-ALTER TABLE `activity_notifications`
- ADD PRIMARY KEY (`id`), ADD KEY `users_id` (`users_id`,`was_read`);
-
---
--- Indexes for table `categories`
---
-ALTER TABLE `categories`
- ADD PRIMARY KEY (`id`), ADD KEY `number_posts` (`number_posts`);
-
---
--- Indexes for table `irclog`
---
-ALTER TABLE `irclog`
- ADD PRIMARY KEY (`id`), ADD KEY `datelog` (`datelog`);
-
---
--- Indexes for table `notifications`
---
-ALTER TABLE `notifications`
- ADD PRIMARY KEY (`id`), ADD KEY `users_id` (`users_id`), ADD KEY `posts_id` (`posts_id`), ADD KEY `sent` (`sent`);
-
---
--- Indexes for table `notifications_bounces`
---
-ALTER TABLE `notifications_bounces`
- ADD PRIMARY KEY (`id`), ADD KEY `email` (`email`,`reported`);
-
---
--- Indexes for table `posts`
---
-ALTER TABLE `posts`
- ADD PRIMARY KEY (`id`), ADD KEY `users_id` (`users_id`), ADD KEY `categories_id` (`categories_id`), ADD KEY `title` (`title`), ADD KEY `number_replies` (`number_replies`), ADD KEY `modified_at` (`modified_at`), ADD KEY `created_at` (`created_at`), ADD KEY `sticked` (`sticked`,`created_at`), ADD KEY `deleted` (`deleted`);
-
---
--- Indexes for table `posts_bounties`
---
-ALTER TABLE `posts_bounties`
- ADD PRIMARY KEY (`id`), ADD KEY `users_id` (`users_id`,`posts_replies_id`), ADD KEY `posts_id` (`posts_id`);
-
---
--- Indexes for table `posts_history`
---
-ALTER TABLE `posts_history`
- ADD PRIMARY KEY (`id`), ADD KEY `posts_id` (`posts_id`);
-
---
--- Indexes for table `posts_notifications`
---
-ALTER TABLE `posts_notifications`
- ADD PRIMARY KEY (`id`), ADD KEY `users_id` (`users_id`,`posts_id`);
-
---
--- Indexes for table `posts_replies`
---
-ALTER TABLE `posts_replies`
- ADD PRIMARY KEY (`id`), ADD KEY `posts_id` (`posts_id`), ADD KEY `users_id` (`users_id`);
-
---
--- Indexes for table `posts_replies_history`
---
-ALTER TABLE `posts_replies_history`
- ADD PRIMARY KEY (`id`), ADD KEY `posts_replies_id` (`posts_replies_id`);
-
---
--- Indexes for table `posts_replies_votes`
---
-ALTER TABLE `posts_replies_votes`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `posts_subscribers`
---
-ALTER TABLE `posts_subscribers`
- ADD PRIMARY KEY (`id`), ADD KEY `posts_id` (`posts_id`);
-
---
--- Indexes for table `posts_views`
---
-ALTER TABLE `posts_views`
- ADD PRIMARY KEY (`id`), ADD KEY `posts_id` (`posts_id`,`ipaddress`);
-
---
--- Indexes for table `posts_votes`
---
-ALTER TABLE `posts_votes`
- ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `users`
---
-ALTER TABLE `users`
- ADD PRIMARY KEY (`id`), ADD KEY `access_token` (`access_token`), ADD KEY `login` (`login`), ADD KEY `email` (`email`), ADD KEY `karma` (`karma`), ADD KEY `login_2` (`login`), ADD KEY `notifications` (`notifications`);
-
---
--- Indexes for table `users_badges`
---
-ALTER TABLE `users_badges`
- ADD PRIMARY KEY (`id`), ADD KEY `users_id` (`users_id`,`badge`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `activities`
---
-ALTER TABLE `activities`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=20;
---
--- AUTO_INCREMENT for table `activity_notifications`
---
-ALTER TABLE `activity_notifications`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
---
--- AUTO_INCREMENT for table `categories`
---
-ALTER TABLE `categories`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=26;
---
--- AUTO_INCREMENT for table `irclog`
---
-ALTER TABLE `irclog`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `notifications`
---
-ALTER TABLE `notifications`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT for table `notifications_bounces`
---
-ALTER TABLE `notifications_bounces`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `posts`
---
-ALTER TABLE `posts`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=14;
---
--- AUTO_INCREMENT for table `posts_bounties`
---
-ALTER TABLE `posts_bounties`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
---
--- AUTO_INCREMENT for table `posts_history`
---
-ALTER TABLE `posts_history`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=51;
---
--- AUTO_INCREMENT for table `posts_notifications`
---
-ALTER TABLE `posts_notifications`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=15;
---
--- AUTO_INCREMENT for table `posts_replies`
---
-ALTER TABLE `posts_replies`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT for table `posts_replies_history`
---
-ALTER TABLE `posts_replies_history`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
---
--- AUTO_INCREMENT for table `posts_replies_votes`
---
-ALTER TABLE `posts_replies_votes`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `posts_subscribers`
---
-ALTER TABLE `posts_subscribers`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `posts_views`
---
-ALTER TABLE `posts_views`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=245;
---
--- AUTO_INCREMENT for table `posts_votes`
---
-ALTER TABLE `posts_votes`
-MODIFY `id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
