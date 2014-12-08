@@ -51,7 +51,7 @@ class Indexer
             } else {
                 $terms = array();
                 foreach ($fields as $field => $value) {
-                    $terms[] = array('term' => array($field => $value));
+                    $terms[] = array('match' => array($field => array('query' => $value, 'operator' => 'and')));
                 }
                 $searchParams['body']['query']['bool']['should'] = $terms;
             }
