@@ -10,7 +10,6 @@ app/cache/metaData/*.php
 tests/_log/*
 vendor/
 .idea/
-composer.lock
 composer.phar
 app/config/config.php
 app/config/backup.app
