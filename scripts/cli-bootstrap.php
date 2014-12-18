@@ -24,6 +24,9 @@ set_time_limit(0);
 
 define('APP_PATH', realpath('..'));
 
+require __DIR__ . '/../vendor/vlucas/phpdotenv/src/Dotenv.php';
+Dotenv::load(__DIR__ . '/../');
+
 /**
  * Read the configuration
  */

@@ -28,10 +28,21 @@ if (!isset($_GET['_url'])) {
 
 define('APP_PATH', realpath('..'));
 
+require __DIR__ . '/../vendor/vlucas/phpdotenv/src/Dotenv.php';
+Dotenv::load(__DIR__ . '/../');
+
 /**
  * Read the configuration
  */
-$config = include APP_PATH . "/app/config/config.php";
+switch ($_SERVER['APP_ENV']) {
+    case 'heroku':
+        $config = include APP_PATH . "/app/config/config_heroku.php";
+        unset($db);
+        break;
+    default:
+        $config = include APP_PATH . "/app/config/config.php";
+        break;
+}
 
 /**
  * Include the loader
@@ -53,7 +64,14 @@ try {
     /**
      * Include the application services
      */
-    require APP_PATH . "/app/config/services.php";
+    switch ($_SERVER['APP_ENV']) {
+        case 'heroku':
+            require APP_PATH . "/app/config/services_heroku.php";
+            break;
+        default:
+            require APP_PATH . "/app/config/services.php";
+            break;
+    }
 
     /**
      * Handle the request
