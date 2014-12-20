@@ -265,7 +265,7 @@ $di->set(
         } else {
             //Cache data for one day by default
             $frontCache = new FrontendOutput(array(
-                "lifetime" => 86400 * 30
+                "lifetime" => 86400
             ));
 
             return new FileCache($frontCache, array(
@@ -292,7 +292,7 @@ $di->set(
 
             //Cache data for one day by default
             $frontCache = new \Phalcon\Cache\Frontend\Data(array(
-                "lifetime" => 86400 * 30
+                "lifetime" => 86400
             ));
 
             return new \Phalcon\Cache\Backend\File($frontCache, array(
