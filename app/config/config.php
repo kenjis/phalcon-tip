@@ -18,12 +18,12 @@
 return new \Phalcon\Config(array(
 
     'site' => array(
-        'name'      => 'Phalcon Tips (Ja)',
+        'name'      => 'Phalcon Tips (Ja) [日本語版]',
         'url'       => $_SERVER['SITE_URL'],
-        'project'   => 'Phalcon',
-        'software'  => 'Phosphorum',
-        'repo'      => 'https://github.com/phalcon/cphalcon/issues',
-        'docs'      => 'https://github.com/phalcon/docs',
+        'project'   => 'phalcon-tip',
+        'software'  => 'phalcon-tip',
+        'repo'      => 'https://github.com/kenjis/phalcon-tip',
+        'docs'      => 'https://github.com/kenjis/phalcon-tip',
     ),
 
     'database'    => array(
