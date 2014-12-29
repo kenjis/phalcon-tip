@@ -18,7 +18,7 @@
 
 		{%- if canonical is defined -%}
 		<meta property="og:url" content="{{ config.site.url }}/{{ canonical }}">
-		<meta property="og:site_name" content="PhalconTip">
+		<meta property="og:site_name" content="{{ config.site.name }}">
 		{%- endif -%}
 
 		{#- Embed this font here to avoid Cross-Site issues -#}
