@@ -84,14 +84,14 @@ class SessionController extends Controller
         if (is_array($response)) {
 
             if (isset($response['error'])) {
-                $this->flashSession->error('Github: ' . $response['error']);
+                $this->flashSession->error('GitHub: ' . $response['error']);
                 return $this->indexRedirect();
             }
 
             $githubUser = new GithubUsers($response['access_token']);
 
             if (!$githubUser->isValid()) {
-                $this->flashSession->error('Invalid Github response. Please try again');
+                $this->flashSession->error('Invalid GitHub response. Please try again');
                 return $this->indexRedirect();
             }
 
@@ -175,7 +175,7 @@ class SessionController extends Controller
 
                 $messageCantSend
                     = 'We weren\'t able to obtain your e-mail address'
-                    . ' from Github, we can\'t send you e-mail notifications';
+                    . ' from GitHub, we can\'t send you e-mail notifications';
                 $this->flashSession->notice($messageCantSend);
             }
 
@@ -198,7 +198,7 @@ class SessionController extends Controller
 
                     $messageFailid
                         = 'We have failed to deliver you some email notifications,'
-                        . ' this might be caused by an invalid email associated to your Github account or '
+                        . ' this might be caused by an invalid email associated to your GitHub account or '
                         . 'its mail server is rejecting our emails. Your current e-mail is: '
                         . $this->escaper->escapeHtml($user->email);
 
@@ -232,7 +232,7 @@ class SessionController extends Controller
             return $this->discussionsRedirect();
         }
 
-        $this->flashSession->error('Invalid Github response. Please try again');
+        $this->flashSession->error('Invalid GitHub response. Please try again');
         return $this->discussionsRedirect();
     }
 

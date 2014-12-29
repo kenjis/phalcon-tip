@@ -59,7 +59,7 @@ $("button").on("click", function(event) { });
 	</p>
 
 	<p>
-		Setting up a repository on Github with the relevant parts of the code alongside with a proper explanation
+		Setting up a repository on GitHub with the relevant parts of the code alongside with a proper explanation
 		to reproduce the issue is an excellent idea. If you don't know how to create a repository, please check this
 		<a href="https://help.github.com/articles/create-a-repo">article</a>.
 	</p>

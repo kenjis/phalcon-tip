@@ -23,7 +23,7 @@
                             topics here
                             before replying or starting your own, and you'll have a better chance of meeting others who share
                             your interests or have had similar problems. If you want to report any bug related to {{ config.site.project }} or
-                            suggest a new feature, please post it on <a href="{{ config.site.repo }}">Github</a> issues.</p>
+                            suggest a new feature, please post it on <a href="{{ config.site.repo }}">GitHub</a> issues.</p>
                     </div>
 
                     {% if firstTime %}

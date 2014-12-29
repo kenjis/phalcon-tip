@@ -68,7 +68,7 @@
 					</li>
 				</ul>
 			{%- else -%}
-				{{ link_to('login/oauth/authorize', '<span class="glyphicon glyphicon-user"></span> Log In with Github', 'class': 'btn btn-default btn-primary navbar-btn navbar-right', 'rel': 'nofollow') }}
+				{{ link_to('login/oauth/authorize', '<span class="glyphicon glyphicon-user"></span> Log In with GitHub', 'class': 'btn btn-default btn-primary navbar-btn navbar-right', 'rel': 'nofollow') }}
 			{%- endif -%}
 			</div>
 		</div>

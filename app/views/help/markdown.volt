@@ -10,7 +10,7 @@
 
 	<p>
 		This forum allows you to use Markdown as markup language when creating posts or adding comments. Markdown
-		is also used by Github so it's probably familiar to you. The following guide explain its basic syntax:
+		is also used by GitHub so it's probably familiar to you. The following guide explain its basic syntax:
 	</p>
 
 	<p>
